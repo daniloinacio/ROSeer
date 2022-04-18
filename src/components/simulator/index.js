@@ -33,7 +33,8 @@ function Simulator( { details, steps, user } ) {
     updateStep(-1);
     document.getElementById('mxContainer').textContent = '';
     graph = undefined;
-  }, [user])
+  }, [])
+  // }, [user])
 
   const updateCell = (cell, x, y, width, height, value, cleanValue, style) => {
     cell.geometry.x = x

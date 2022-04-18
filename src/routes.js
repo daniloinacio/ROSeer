@@ -29,10 +29,12 @@ function Routes() {
     <ProvideAuth>
       <BrowserRouter>
         <Switch>
-          <Route path='/login' component={Connect} />
+        <Route path='/' component={Home} />
+          <Home />
+          {/* <Route path='/login' component={Connect} />
           <PrivateRoute path='/'>
             <Home />
-          </PrivateRoute>
+          </PrivateRoute> */}
         </Switch>
       </BrowserRouter>
     </ProvideAuth>
