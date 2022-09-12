@@ -14,8 +14,8 @@
 }
 
 .tabs {
-  min-height: 600px;
-  min-width: 600px;
+  min-height: 100%;
+  min-width: 80%;
   margin-top: 15px;
   padding-right: 50px;
   padding-left: 50px;
@@ -24,4 +24,10 @@
 
 .select-field {
   min-width: 250px;
+}
+
+.simulator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

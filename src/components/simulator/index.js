@@ -1,4 +1,4 @@
-import { FaFastForward, FaFastBackward, FaStepForward, FaStepBackward, FaPlayCircle, FaStopCircle, FaRedoAlt} from 'react-icons/fa'
+import { FaToggleOn, FaToggleOff, FaFastForward, FaFastBackward, FaStepForward, FaStepBackward, FaPlayCircle, FaStopCircle, FaRedoAlt} from 'react-icons/fa'
 import { TextField, InputAdornment } from '@material-ui/core';
 
 import factory from 'mxgraph'
@@ -20,21 +20,23 @@ registerFloorplanWallU(mx.mxUtils, mx.mxCellRenderer, mx.mxShape);
 registerFloorplanWall(mx.mxUtils, mx.mxCellRenderer, mx.mxShape);
 registerFloorplanRoom(mx.mxUtils, mx.mxCellRenderer, mx.mxShape);
 
-function Simulator( { details, steps, user } ) {
+function Simulator( { details, steps } ) {
   const [step, updateStep] = useState(-1)
   const [timestamp, updateTimestamp] = useState()
   const [title, updateTitle] = useState("")
   const [maxStep, updateMaxStep] = useState(0)
   const [running, updateRunning] = useState(false)
+  const [live, updateLive] = useState(true)
   const [playInterval, updatePlayInterval] = useState(undefined)
-  const [speed, setSpeed] = useState(200);
+  const [speed, setSpeed] = useState(0);
+
+
 
   useEffect(() => {
     updateStep(-1);
     document.getElementById('mxContainer').textContent = '';
     graph = undefined;
   }, [])
-  // }, [user])
 
   const updateCell = (cell, x, y, width, height, value, cleanValue, style) => {
     cell.geometry.x = x
@@ -90,7 +92,6 @@ function Simulator( { details, steps, user } ) {
 
   useEffect( () => {
     if (step >= 0 && step <= maxStep){
-
       if (step === maxStep) updateRunning(false);
       else{
         processStep(steps[step]);
@@ -126,6 +127,14 @@ function Simulator( { details, steps, user } ) {
       container.setAttribute('style', `width:${details?.dimensions.width}px;height:${details?.dimensions.height}px`)
     }
   }, [details, steps])
+
+  useEffect(() => {
+    if (!live) {
+      updateStep(maxStep-1);
+      setSpeed(200);
+      updateRunning(true);
+    }
+  }, [live])
   
   useEffect(() => {
     if (!running) {
@@ -142,6 +151,18 @@ function Simulator( { details, steps, user } ) {
       <h2>
         {title}
       </h2>
+      <button
+        className="live-button"
+        onClick={() => {
+            updateLive(live => !live);
+          }
+        }
+      >
+        {
+          live ? <FaToggleOn className='live-icon' /> : < FaToggleOff className='live-icon' />
+        }
+        live
+      </button>
       <p>TimeStamp: {timestamp} • Step: {step}/{maxStep}</p>
       <TextField className="speed" 
         label="Intervalo entre os passos"
@@ -198,6 +219,7 @@ function Simulator( { details, steps, user } ) {
         <FaFastForward />
       </button>
       <br/>
+
       <button 
         className="control reset"
         disabled={step === 0 || step === -1}
@@ -207,6 +229,7 @@ function Simulator( { details, steps, user } ) {
       </button>
 
       <div id="mxContainer" />
+
   </div>
   );
 }

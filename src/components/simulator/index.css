@@ -5,6 +5,7 @@
 }
 
 #Simulator {
+  background-color: #f6f4f4 ;
   text-align: center;
 }
 
@@ -28,6 +29,14 @@
 
 .control.reset {
   font-size: 20px;
+}
+
+.live-button {
+  font-size: 20px;
+}
+
+.live-icon {
+  margin-right: 3px;
 }
 
 .mxTooltip {

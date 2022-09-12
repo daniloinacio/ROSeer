@@ -1,22 +1,22 @@
 import { FormControl, Tabs, Tab, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FaRegWindowMaximize } from 'react-icons/fa'
 import Simulator from '../../components/simulator';
 import TabPanel from '../../components/TabPanel';
 import { useEffect, useState } from 'react';
 import './index.css';
 import LogsTab from '../../components/logsTab';
 import { Ros, Topic } from 'roslib/src/core';
-
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 function Home() {
   const [details, setDetails] = useState();
   const [steps, setSteps] = useState([]);
 
-  const [user, setUser] = useState('');
-  const [usersList, setUsersList] = useState([]);
   const [tab, setTab] = useState(0);
-  const [logs, setLogs] = useState([]);
-  const [data, setData] = useState([]);
-  var buffer = []
+  // const [logs, setLogs] = useState([]);
+  // const [data, setData] = useState([]);
+
+  const handle = useFullScreenHandle();
 
   useEffect(() => {
     var ros = new Ros();
@@ -46,19 +46,14 @@ function Home() {
 
     live_report.subscribe((message) => {
       var msg = JSON.parse(message.data)
-      if (msg !== null) {
-        if (msg.scenario !== undefined) {
-          // setData(data => [...data, msg.scenario])
-          buffer.push(msg.scenario)
-          console.log(msg.scenario)
-        } else {
-          // setData(data => [...data, msg])
-          buffer.push(msg)
-          console.log(msg)
-        }
-        // console.log(buffer)
-        setDetails(buffer[0])
-        setSteps(buffer.slice(1))
+      if(msg.scenario !== undefined){
+        setSteps(steps => [...steps, msg.scenario]);
+      }
+      else if (msg.timestamp === -1){
+        setDetails(msg);
+      }
+      else{
+        setSteps(steps => [...steps, msg]);
       }
     });
 
@@ -68,26 +63,7 @@ function Home() {
     <div className="Home">
       <header className="Home-header">
         <h1>{"Simulador"}</h1>
-        {/* {usersList.length > 0 && ( */}
           <>
-          {/* <FormControl>
-            <InputLabel>Selecione um usuário...</InputLabel>
-            <Select
-              className="select-field"
-              value={user}
-              onChange={event => setUser(event.target.value)}
-            >
-              {usersList.map(item => (
-                <MenuItem
-                  key={item}
-                  value={item}
-                >
-                  {item}
-                  </MenuItem>
-              ))}
-            </Select>
-          </FormControl> */}
-          {/* {user && ( */}
             <div className="tabs">
               <Tabs value={tab} onChange={(e, n) => setTab(n)}>
                 <Tab label="Simulação" value={0} />
@@ -96,7 +72,14 @@ function Home() {
                 )} */}
               </Tabs>
               <TabPanel value={tab} index={0}>
-                <Simulator details={details} steps={steps} user={user}/>
+                <button
+                  onClick={handle.enter}
+                >
+                  <FaRegWindowMaximize/>
+                </button>
+                <FullScreen className="simulator-container" handle={handle}>
+                  <Simulator details={details} steps={steps}/>
+                </FullScreen>
               </TabPanel>
               {/* <TabPanel value={tab} index={1}>
                 <LogsTab logs={logs} />
