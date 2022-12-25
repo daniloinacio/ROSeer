@@ -1,11 +1,15 @@
-FROM node:16.14.0
+FROM node:16.14.0 as build-stage
 
-WORKDIR /opt/roseer
-COPY ./package.json /opt/roseer/package.json
-COPY ./package-lock.json /opt/roseer/package-lock.json
-COPY ./public /opt/roseer/public
-COPY ./server /opt/roseer/server
-COPY ./src /opt/roseer/src
-COPY ./roseer_entrypoint.sh /opt/roseer/roseer_entrypoint.sh
+WORKDIR /app
+COPY ./package.json /app/package.json
+COPY ./package-lock.json /app/package-lock.json
+COPY ./public /app/public
+COPY ./server /app/server
+COPY ./src /app/src
+COPY ./roseer_entrypoint.sh /app/roseer_entrypoint.sh
 RUN npm install
-ENTRYPOINT [ "/bin/bash", "/opt/roseer/roseer_entrypoint.sh" ]
+RUN npm run build
+
+FROM nginx:stable
+COPY --from=build-stage /app/build /usr/share/nginx/html
+
