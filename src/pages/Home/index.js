@@ -16,7 +16,6 @@ function Home() {
   const [tab, setTab] = useState(0);
   const [logs, setLogs] = useState([]);
   const [data, setData] = useState([]);
-  var buffer = []
 
   useEffect(() => {
     var ros = new Ros();
@@ -37,28 +36,24 @@ function Home() {
 
     ros.connect('ws://localhost:9090');
 
-    var live_report = new Topic({
+    const live_report = new Topic({
       ros : ros,
       name : '/live_report',
       messageType : 'std_msgs/String'
     });
-    
 
     live_report.subscribe((message) => {
       var msg = JSON.parse(message.data)
       if (msg !== null) {
         if (msg.scenario !== undefined) {
-          // setData(data => [...data, msg.scenario])
-          buffer.push(msg.scenario)
-          console.log(msg.scenario)
-        } else {
-          // setData(data => [...data, msg])
-          buffer.push(msg)
-          console.log(msg)
+          setSteps(steps => [...steps, msg.scenario])
+        } else if (msg.details !== undefined) {
+          setDetails(msg.details)
         }
-        // console.log(buffer)
-        setDetails(buffer[0])
-        setSteps(buffer.slice(1))
+         else {
+          setSteps(steps => [...steps, msg])
+        }
+        console.log(msg)
       }
     });
 

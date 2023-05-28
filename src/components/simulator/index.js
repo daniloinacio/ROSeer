@@ -15,6 +15,8 @@ const mx = factory();
 
 let graph;
 
+// mxVertexHandler.prototype.rotationEnabled = true;
+
 // Register extra floorplan shapes
 registerFloorplanWallU(mx.mxUtils, mx.mxCellRenderer, mx.mxShape);
 registerFloorplanWall(mx.mxUtils, mx.mxCellRenderer, mx.mxShape);
@@ -36,7 +38,7 @@ function Simulator( { details, steps, user } ) {
   }, [])
   // }, [user])
 
-  const updateCell = (cell, x, y, width, height, value, cleanValue, style) => {
+  const updateCell = (parent, cell, x, y, width, height, value, cleanValue, style, rotate) => {
     cell.geometry.x = x
     cell.geometry.y = y
     cell.geometry.width = width
@@ -60,17 +62,17 @@ function Simulator( { details, steps, user } ) {
 
           if(aux[0] === 'timestamp') continue
 
-          const {x, y, width, height, value, style} = aux[1];
+          const {x, y, width, height, value, style, rotate} = aux[1];
           const cleanValue = value ? value.match(/>(.*)</) : ''
 
-          if(cell) updateCell(cell, x, y, width, height, value, cleanValue, style);
+          if(cell) updateCell(parent, cell, x, y, width, height, value, cleanValue, style, rotate);
           else graph.insertVertex(parent, aux[0], cleanValue ? cleanValue[1] : value, x, y, width, height, style?.startsWith('ellipse') ? "shape=" + style   : style)
         
         } else {
 
           if(!currStep.hasOwnProperty(ent) || ent === 'timestamp') continue
           const cell = model.getCell(ent)
-          const {x, y, width, height, value, style} = currStep[ent]
+          const {x, y, width, height, value, style, rotate} = currStep[ent]
           const cleanValue = value ? value.match(/>(.*)</) : ''
           
           if(ent === 'deleted') {
@@ -78,7 +80,7 @@ function Simulator( { details, steps, user } ) {
             remove.style = "display:none;"
           }
           
-          if (cell) updateCell(cell, x, y, width, height, value, cleanValue, style);
+          if (cell) updateCell(parent,cell, x, y, width, height, value, cleanValue, style, rotate);
           else graph.insertVertex(parent, ent, cleanValue ? cleanValue[1] : value, x, y, width, height, style?.startsWith('ellipse') ? "shape=" + style   : style)
           
         }
