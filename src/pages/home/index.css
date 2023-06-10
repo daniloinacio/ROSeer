@@ -13,12 +13,18 @@
   color: rgb(0, 0, 0);
 }
 
+.Teste {
+  overflow: auto;
+  width: 100vw;
+  height: 100vh;
+}
+
 .tabs {
   min-height: 600px;
   min-width: 600px;
+  height: 100%;
+  width: 100%;
   margin-top: 15px;
-  padding-right: 50px;
-  padding-left: 50px;
   background-color: #f6f4f4;
 }
 
