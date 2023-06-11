@@ -41,7 +41,7 @@ function Simulator( { details, steps } ) {
   const [running, updateRunning] = useState(false)
   const [playInterval, updatePlayInterval] = useState(undefined)
   const [speedMultiplicator, setSpeedMultiplicator] = useState(1);
-  const [live, updateLive] = useState(false)
+  const [live, updateLive] = useState(true)
   const [rewind, updateRewind] = useState(false)
   const [speed, setSpeed] = useState(200)
 
@@ -67,7 +67,7 @@ function Simulator( { details, steps } ) {
   useEffect( () => {
 
     function processStep(currStep){
-      if (graph !== undefined && currStep !== undefined){
+      if (graph !== undefined){
         const model = graph?.getModel()
         const parent = graph?.getDefaultParent();
         updateTimestamp(currStep?.timestamp)
@@ -197,8 +197,6 @@ function Simulator( { details, steps } ) {
           rewind ? updateStep(step => max(step - 1, 0)) : updateStep(step => step + 1)
         }, speed / speedMultiplicator))
       }
-      console.log('Speed: ', speed)
-      console.log('Speed / Mult', speed / speedMultiplicator)
 
       return () => clearInterval(playInterval)
   }, [running, playInterval, speed, speedMultiplicator, live, rewind])
