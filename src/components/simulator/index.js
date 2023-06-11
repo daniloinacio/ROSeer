@@ -33,7 +33,7 @@ registerFloorplanWallU(mx.mxUtils, mx.mxCellRenderer, mx.mxShape);
 registerFloorplanWall(mx.mxUtils, mx.mxCellRenderer, mx.mxShape);
 registerFloorplanRoom(mx.mxUtils, mx.mxCellRenderer, mx.mxShape);
 
-function Simulator( { details, steps } ) {
+function Simulator( { simulationId, details, steps } ) {
   const [step, updateStep] = useState(-1)
   const [timestamp, updateTimestamp] = useState()
   const [title, updateTitle] = useState("Waiting for simulation snapshots...")
@@ -51,7 +51,7 @@ function Simulator( { details, steps } ) {
     updateStep(-1);
     document.getElementById('mxContainer').textContent = '';
     graph = undefined;
-  }, [])
+  }, [simulationId])
 
 
   const updateCell = (cell, x, y, width, height, value, cleanValue, style) => {

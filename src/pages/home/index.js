@@ -3,26 +3,26 @@ import { useEffect, useState } from 'react';
 import './index.css';
 import { Ros, Topic } from 'roslib/src/core';
 
-
 function Home() {
   const [details, setDetails] = useState();
   const [steps, setSteps] = useState([]);
+  const [simulationId, setSimulationId] = useState(undefined);
 
   useEffect(() => {
     var ros = new Ros();
 
     // If there is an error on the backend, an 'error' emit will be emitted.
     ros.on('error', (error) => {
-      console.log(error);
+      console.log(error)
     });
 
     // Find out exactly when we made a connection.
     ros.on('connection', () => {
-      console.log('Connection made!');
+      console.log('ROS connection established!')
     });
 
     ros.on('close', () => {
-      console.log('Connection closed.');
+      console.log('ROS connection closed!')
     });
 
     ros.connect('ws://localhost:9090');
@@ -36,13 +36,18 @@ function Home() {
     live_report.subscribe((message) => {
       var msg = JSON.parse(message.data)
       if (msg !== null) {
-        if (msg.scenario !== undefined) {
+
+        if (msg.simulation_id !== undefined) {
+          setDetails(undefined)
+          setSteps([])
+          setSimulationId(msg.simulation_id)
+        } else if (msg.scenario !== undefined) {
           setSteps(steps => [...steps, msg.scenario])
         } else if (msg.details !== undefined) {
           setDetails(msg.details)
         }
          else {
-          setSteps(steps => [...steps, msg])
+          setSteps(steps => [...steps, msg.snapshot])
         }
       }
     });
@@ -50,8 +55,8 @@ function Home() {
   }, []);
 
   return (
-    <div className="Teste">
-        <Simulator details={details} steps={steps}/>
+    <div className="home">
+        <Simulator simulationId={simulationId} details={details} steps={steps}/>
     </div>
   );
 }

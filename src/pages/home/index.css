@@ -1,33 +1,5 @@
-.Home {
-  text-align: center;
-}
-
-.Home-header {
-  background-color: #ebebeb;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: rgb(0, 0, 0);
-}
-
-.Teste {
+.home {
   overflow: auto;
   width: 100vw;
   height: 100vh;
-}
-
-.tabs {
-  min-height: 600px;
-  min-width: 600px;
-  height: 100%;
-  width: 100%;
-  margin-top: 15px;
-  background-color: #f6f4f4;
-}
-
-.select-field {
-  min-width: 250px;
 }
